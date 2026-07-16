@@ -1,0 +1,11 @@
+# Generated art lands here — commit curated results into assets/ deliberately.
+output/
+
+.DS_Store
+node_modules/
+__pycache__/
+
+# Never commit credentials
+.env
+.env.*
+*.key
