@@ -90,7 +90,7 @@ open this repo in Claude Code and they load automatically, or read them as docs:
 | `root/alano-think.png` | Canonical image-to-image reference — attach to every API request |
 | `root/badge-ref.png` | Style reference for medallion coin badges |
 | `stills/` | Sample generated stills (Seedream output: idle, celebrating, wave) |
-| `cutouts/` | Sample transparent cutouts made by `cutout_alano.py` |
+| `cutouts/` | Sample transparent cutout (`wave-cutout.webp`) made by `cutout_alano.py`. For the cleanest example of a cutout, look at `root/alano-root.png` itself — it's the chroma-green pipeline output with no edge halo. |
 | `badges/` | Sample finished badge (shipped WebP) |
 | `video/raw/idle.mp4` | A raw Seedance clip, straight from the API (before finishing) |
 | `video/idle.mp4` + `idle.webp` | The same clip finished: 480×480 palindrome loop + poster |
@@ -130,19 +130,30 @@ This repo bundles two different things, under two different licenses:
 - **Code** (scripts, skills, docs) — [MIT](LICENSE). Use, modify, and
   redistribute freely, including commercially.
 - **Alano brand & assets** (the character design and everything under
-  `assets/`) — copyright **Alano Tech Pte. Ltd.**, all rights reserved,
-  under the grant below:
+  `assets/`) — the **Free Mascot License**, below. Alano Tech Pte. Ltd.
+  keeps copyright, trademark, and ownership of the character; you get broad,
+  free, commercial usage rights.
 
-  > Alano Tech Pte. Ltd. grants a non-exclusive, worldwide, royalty-free
-  > license to use, reproduce, display, and create derivative works of the
-  > Alano character and the reference assets in this repository, including
-  > for commercial products. Alano Tech Pte. Ltd. retains ownership of the
-  > character and the Alano name/trademark; this license does not transfer
-  > ownership, and does not grant rights to imply endorsement by or
-  > partnership with Alano Tech Pte. Ltd.
+### Free Mascot License
 
-In short: build with Alano, ship it in your product, sell it — just don't
-claim you own the character or that Alano Tech endorses your product.
+Alano Tech Pte. Ltd. retains **copyright, trademark, and IP ownership** of
+the Alano character. Subject to that, anyone is free to:
+
+- ✅ Use Alano in **commercial products**
+- ✅ Use Alano in **indie apps and side projects**
+- ✅ Use Alano in **AI products** (chatbots, agents, virtual pets, etc.)
+- ✅ Use Alano at **hackathons**
+
+You may **not**:
+
+- ❌ **Resell** Alano assets themselves (as a standalone asset pack, template,
+  or stock library)
+- ❌ **Claim you created** the Alano character
+- ❌ Mint or sell Alano as an **NFT**
+- ❌ Use Alano in **offensive, hateful, or illegal** contexts
+
+This license does not transfer ownership of the character or grant any
+right to imply endorsement by or partnership with Alano Tech Pte. Ltd.
 
 ## Where Alano ships today
 

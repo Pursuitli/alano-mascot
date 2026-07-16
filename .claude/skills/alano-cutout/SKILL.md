@@ -24,8 +24,9 @@ python3 scripts/cutout_alano.py output/stills/wave.png
 # → output/stills/wave-cutout.webp (RGBA, trimmed, max 1024px)
 ```
 
-Shipped examples: `assets/cutouts/wave-cutout.webp`,
-`assets/cutouts/celebrating-cutout.webp` (from `assets/stills/` sources).
+Shipped example: `assets/cutouts/wave-cutout.webp` (from `assets/stills/alano-wave.png`).
+The cleanest reference for what a good cutout looks like is
+`assets/root/alano-root.png` itself — chroma-green pipeline, no edge halo.
 
 ## How it works — two modes, auto-detected from the border color
 
@@ -61,8 +62,13 @@ capped at 1024px.
   regenerate on a more distinct backdrop (this is when a green backdrop earns
   its keep) rather than fighting the tolerance. Known example:
   `assets/stills/idle.png` fails this way — its cream face tones connect to
-  the cream backdrop, and the flood-fill eats holes in the face. Poses like
-  wave/celebrating/proud cut cleanly.
+  the cream backdrop, and the flood-fill eats holes in the face.
+- Cream-mode cutouts can still leave a faint gray/white fringe on
+  high-contrast, soft-rendered edges (raised paws, tail, floating confetti)
+  even when the character isn't erased — this is why the root reference was
+  redone on chroma-green (see above) rather than patched with tolerance
+  tuning. If a still has a lot of outstretched limbs or fine detail near the
+  edge, generate it on chroma-green from the start instead of cream.
 
 ## Video cutouts
 
