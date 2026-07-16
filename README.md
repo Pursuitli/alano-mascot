@@ -60,6 +60,38 @@ or app.
   [Omu Labs](https://omulabs.co) — we're an authorized BytePlus partner and
   can offer a discount on standard Seedream/Seedance pricing.
 
+### Not locked to one model
+
+The technique here — anchor every generation to a reference image plus a
+fixed style prompt — isn't Seedream-specific; it works with any model that
+accepts an image reference. Alano is tuned and proven on Seedream/Seedance
+today, but a few other models are worth knowing about if you're adapting
+this pipeline:
+
+- **OpenAI `gpt-image-1`** (via the Images API `edits` endpoint) accepts
+  multiple input images for reference and can output a **native transparent
+  background** (`background: "transparent"`) — worth trying as a shortcut
+  around the whole `cutout_alano.py` step for that model. It's also
+  generally stronger at in-image text than Seedream, so the "never trust the
+  model for text" workaround in this skill may need less defensive
+  cropping — test it rather than assuming the same failure mode carries
+  over. (There's no separate `gpt-image-2` as of this writing — OpenAI's
+  current image-gen line is `gpt-image-1`; treat any reference to a "2" as
+  forward-looking, not a real model id to hardcode.)
+- **Google's Gemini 2.5 Flash Image** ("Nano Banana") is arguably the most
+  interesting fit for this project specifically: it's built for strong
+  **subject/character consistency across turns** using conversational
+  context and multi-image input, rather than needing a fresh reference
+  image re-attached on every call. That's precisely the problem this repo
+  works around by hand (root image + STYLE string) — it may be worth a
+  side-by-side test to see whether it holds Alano on-model with a lighter
+  prompt.
+
+Swapping providers means changing the request builder in
+`scripts/generate-alano-images.mjs` / `generate-alano-videos.mjs` to match
+that API's shape — the reference-image discipline and STYLE string from
+`alano-brand` still apply regardless of which model renders the pixels.
+
 ```bash
 # API key is runtime-injected — NEVER committed to this repo.
 SEEDANCE_API_KEY="<your key>" node scripts/generate-alano-images.mjs

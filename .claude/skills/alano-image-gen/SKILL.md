@@ -65,6 +65,29 @@ Recipe that works: generate the art with "absolutely no text", then erase the
 text region and typeset real text locally with ImageMagick (`-annotate` with a
 real font file). Always zoom-crop the text region and inspect it afterwards.
 
+## Using a different model
+
+Alano is tuned and proven on Seedream, but the reference-image + STYLE
+string method isn't Seedream-specific. Two alternatives worth knowing:
+
+- **OpenAI `gpt-image-1`** (Images API `edits` endpoint) takes multiple
+  input images as reference and can output a native transparent background
+  (`background: "transparent"`) — potentially skipping `cutout_alano.py`
+  entirely for that model. Its text rendering is also generally better than
+  Seedream's, so don't assume the "never trust the model for text" failure
+  mode below carries over uncritically — test first. (No `gpt-image-2`
+  exists yet; don't hardcode that model id.)
+- **Google Gemini 2.5 Flash Image ("Nano Banana")** is built specifically
+  for cross-turn subject consistency via conversational/multi-image context,
+  which is exactly the problem this skill solves manually with a re-attached
+  reference image every call — worth a side-by-side test to see if it holds
+  Alano on-model with a lighter prompt.
+
+Swapping providers means changing the request shape in
+`scripts/generate-alano-images.mjs` to match — the character-consistency
+rules in `alano-brand` still apply regardless of which model renders the
+pixels.
+
 ## After generating
 
 1. Inspect the result at full size (the character must match the reference —
