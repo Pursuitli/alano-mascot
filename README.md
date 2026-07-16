@@ -36,6 +36,35 @@ or app.
 
 ![Alano root](assets/root/alano-root.png)
 
+## Bring Alano into your own project
+
+The fastest way to actually use this kit inside your own app:
+
+1. **Fork this repo** (or just download/copy it).
+2. **Copy the whole folder into your own project** — e.g. as `alano-mascot/`
+   at the root, or wherever fits your stack.
+3. **Open your project in your AI coding agent** and ask it to study the
+   `alano-mascot/` directory — starting with `README.md` and
+   `.claude/skills/alano-brand/SKILL.md`.
+   - Claude Code auto-loads skills from `.claude/skills/` wherever they live
+     in the tree — that's a Claude-Code-native mechanism (frontmatter +
+     description-matching + the `Skill` tool). Other agents (Cursor,
+     Windsurf, etc.) don't auto-load them — point them at the same files
+     manually; the content still works fine as plain reference docs, it just
+     won't auto-trigger.
+4. **Ask for advice.** Describe your app and ask which Alano mood, pose, or
+   costume fits it — e.g. "I'm building a habit tracker, which Alano variant
+   suits a streak-celebration moment?" The full catalogue of proven
+   moods/costumes/props lives in `alano-brand/SKILL.md`.
+5. **Ask it to generate a few stills** — specifically, to add an entry to the
+   `STILLS` array in `scripts/generate-alano-images.mjs` and run it (see
+   `alano-image-gen`), not to call an image API on its own. That's what keeps
+   every generation anchored to the reference image and STYLE string instead
+   of drifting off-model. This chat-driven flow is great for exploring a few
+   poses; for bulk generation, running the script directly with
+   `SEEDREAM_ONLY=id1,id2` is faster than a conversational loop. You'll need
+   a `SEEDANCE_API_KEY` either way — see Requirements below.
+
 ## How it works — 30 seconds
 
 1. **Never draw, never freestyle-prompt.** Every generation attaches a root
@@ -103,7 +132,10 @@ python3 scripts/cutout_alano.py output/stills/wave.png
 ## Skills (the actual guide)
 
 The detailed how-tos live as Claude Code skills in [.claude/skills/](.claude/skills/) —
-open this repo in Claude Code and they load automatically, or read them as docs:
+open this repo in Claude Code and they load automatically, or read them as docs.
+Using a different agent (Cursor, Windsurf, etc.)? See
+[Bring Alano into your own project](#bring-alano-into-your-own-project) —
+you'll need to point it at these files yourself:
 
 | Skill | What it teaches |
 |---|---|
