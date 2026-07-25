@@ -51,6 +51,37 @@ SEEDREAM_ONLY=wave,thinking SEEDANCE_API_KEY="<key>" node scripts/generate-alano
 
 Output lands in `output/stills/` (badges in `output/badges/`).
 
+## Batch variety: orientation needs to be explicit
+
+When generating many poses in one batch, the attached reference image
+conditions the model toward a similar default body orientation almost every
+time — without an explicit instruction, most results drift toward facing the
+same direction regardless of pose. If a batch needs genuine visual variety,
+add an explicit, randomized orientation clause per prompt (e.g. "facing
+directly toward the viewer" / "body turned to face the left side of the
+frame" / "in a three-quarter turn facing toward the right") rather than
+assuming pose variation alone will produce it.
+
+## Optional: a less-fluffy material finish
+
+The default STYLE string's "plush" and "fur" language reliably renders as
+soft plush-toy fuzz. If a project wants Alano to read as smooth
+vinyl/rubber-toy instead — same colors, proportions, and outfit, different
+surface material — swap those two words out and add explicit no-fur-strand
+language:
+
+- `"cute plush cat mascot"` → `"cute cat mascot character"`
+- `"pink-and-mint gradient fur"` → `"pink-and-mint gradient smooth surface"`
+- add: `"smooth matte vinyl-toy finish, soft rounded blended gradient
+  shading, no visible fur strands or fuzzy texture, clean smooth surface
+  like a soft rubber/vinyl figure"`
+
+This is a real material/identity change, not a rendering nuance — it changes
+what Alano *is*, not just how the render looks. Treat it as a deliberate
+per-project decision (documented here so it doesn't need re-deriving), not a
+default worth silently baking into the canonical STYLE string in
+`alano-brand`.
+
 ## Badges (medallion coins)
 
 Use `assets/root/badge-ref.png` as the reference and the `BADGE_STYLE` string

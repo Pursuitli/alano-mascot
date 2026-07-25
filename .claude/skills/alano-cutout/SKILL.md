@@ -53,6 +53,46 @@ the wrong tool here, learned the hard way:
 Both modes end the same way: alpha feathered (Gaussian blur 1.2), bbox-trim,
 capped at 1024px.
 
+### Known issue: the global mask still bites mint fur
+
+The global mask trades one failure for another: because it classifies *any*
+green-dominant pixel as background regardless of position, it also eats real
+character pixels wherever Alano's mint fur/ears/tail render saturated enough
+to cross the same threshold — visible as small bites near the jaw/cheek on
+some generations, even with the dilate+despill pass. It's not rare enough to
+ignore at batch scale (seen on multiple independently generated variants).
+
+**A border-connected flood-fill using a *greenness* test (rather than exact
+color distance) fixes this**, and doesn't reintroduce the enclosed-pocket
+problem the global mask was built to solve, *as long as the greenness
+candidate mask is eroded before flooding and dilated back after* — this
+severs thin anti-aliased seams (e.g. where the jaw meets the ear) that would
+otherwise let the flood leak into the character, while a plain unearthed
+flood-fill would leak through them. Concretely:
+
+1. `candidate = greenness(rgb) > 45` (looser than 60 — also catches a
+   differently-lit ground/shadow band that a fixed-color-distance flood-fill
+   misses, since greenness dominance survives lighting variation that exact
+   RGB distance doesn't).
+2. Erode `candidate`, flood-fill from the border through the eroded mask,
+   dilate the flooded result back out, then re-intersect with `candidate`.
+3. Despill and finish as usual.
+
+**The erosion radius must scale with image resolution, not be a fixed pixel
+count.** A kernel tuned at ~864px wide was ~3x too weak at 2560px wide — a
+green-spill bridge (see below) needed ~10 erosion passes to sever at 2560px
+vs. 2 at 864px. `max(2, round(width / 256))` passes worked in testing.
+
+**Green spill on pastel surfaces near enclosed gaps is real, not a
+render error.** Physically-based renders correctly cast faint green
+bounce-light onto nearby light-colored concave surfaces that face the
+backdrop — e.g. inner thighs on a standing pose, likely underarms/underchin
+too. That tinted surface reads green-enough to bridge a real background
+pocket (like the gap between the legs) into the character, biting a chunk
+out of the limb. Adequate erosion (scaled per above) severs the bridge;
+insufficient erosion lets it through regardless of which masking strategy
+you use, global or flood-fill.
+
 ## Tuning
 
 - Background halo left around the fur → raise `TOLERANCE` a little (too high
