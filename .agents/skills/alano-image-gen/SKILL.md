@@ -62,6 +62,72 @@ directly toward the viewer" / "body turned to face the left side of the
 frame" / "in a three-quarter turn facing toward the right") rather than
 assuming pose variation alone will produce it.
 
+## Generating for cutout: demand a flat backdrop, explicitly
+
+If the still is destined for `alano-cutout`, "solid background color to all four
+edges" is **not enough**. The model will happily read that as a studio *set* —
+a floor with a horizon line, the character standing on a receding plane — which
+is technically a solid colour everywhere and still ruins the key: the floor
+bounces its colour onto his paws, and contact shadows pool into ragged blobs.
+
+Add this to the prompt whenever the output will be keyed:
+
+> The background is one completely flat uniform field of color with no floor,
+> no ground plane, no horizon line, no wall-to-floor corner and no perspective —
+> the character floats against it. No contact shadow, no cast shadow, no
+> reflection and no darkened pool beneath his feet.
+
+Pair it with an explicit anti-blend clause, since the model otherwise drifts his
+mint toward whatever the backdrop is:
+
+> Alano's own colors must stay soft and pastel — his legs, arms, ears and tail
+> are pale desaturated mint-teal and cream, and must never take on the color of
+> the backdrop, never be tinted by it, and never blend into it; keep an
+> unambiguous, clearly visible edge between his silhouette and the background
+> everywhere, especially around the legs, feet, ears, jaw and tail.
+
+Together these took a 20-render batch from 7 unusable cutouts to 0. Without
+them, roughly half of a batch came back with legs the same colour as the
+backdrop — unrecoverable at the cutout stage, see `alano-cutout`.
+
+## Batch consistency: cascade from a reference set, not a single reference
+
+Attaching `alano-think.png` to every call holds the *character* but not the
+*expression* — it has one fixed face, so asking it for "sad" fights the
+conditioning, and emotion fidelity across a batch stays weak.
+
+For any batch large enough to care, generate in two tiers:
+
+1. **Tier 1 — a small reference library.** Generate one image per emotion
+   (or per costume, per whatever axis needs to hold), all in an identical
+   **pose-neutral** setup: same stance, front-facing, arms at sides, no props,
+   no costume, no particles. Only the face varies. Review these by hand — a
+   set of 20 is cheap to eyeball and it is the highest-leverage gate in the
+   pipeline.
+2. **Tier 2 — the batch**, each image conditioned on the Tier 1 member matching
+   its emotion. The model is handed the expression as a *picture* rather than a
+   word.
+
+Pose-neutrality in Tier 1 is the part that's easy to get wrong: a reference
+encodes posture as strongly as it encodes expression, so a slumped "sad"
+reference drags every downstream scenario toward slumping. Let ears, tail and a
+slight head tilt carry the emotion — they read clearly on a cat without
+disturbing the stance.
+
+## Batch variety: compose scenarios, don't permute axes
+
+Sampling `occupation x pose x weather x mood` and concatenating the fragments
+produces prompts that read like coordinates, and output that feels mechanical —
+the same costume in twelve poses rather than twelve different ideas. It also
+generates incoherent combinations ("sad" + "playing football joyfully") that the
+model renders as a muddle because the prompt fights itself.
+
+Prefer **authored scenarios** as the atomic unit — a written moment that already
+bundles action, props and context ("tossing a disc of pizza dough into the air, a
+small puff of flour around his paws") — with emotion and orientation as light
+modifiers on top. Give each scenario an explicit list of emotions it's
+compatible with, so variants sample only from combinations that make sense.
+
 ## Optional: a less-fluffy material finish
 
 The default STYLE string's "plush" and "fur" language reliably renders as
